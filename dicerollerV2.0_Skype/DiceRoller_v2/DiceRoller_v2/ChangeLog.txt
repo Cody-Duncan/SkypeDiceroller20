@@ -1,0 +1,19 @@
+July 20th, 2011
+Version 2.0.1
+- Propogated the chat message information to the command window to improve user feedback.
+- Rebuilt with Skype4COM.dll registered. Hopefully fixes an initialization error.
+- Added "Failed to create Skype instance!" message when intialization fails.
+- Tested with skype v5.3.0.120
+
+October 24th, 2011
+Version 2.0.2
+- determined that the message "Cannot create instance of Skype" is caused by not registering
+the Skype4COM.dll . Included instructions in readme on how to register it.
+- Fixed a bug where the CoUnitialize() and the end of main() would both call the DiceRoller
+destructor, which clears the rolledVals vector twice, throwing an error.
+-Upgraded Solution to Visual Studio 2010
+
+December 31st, 2011
+- Added RegisterSkype4COM.bat to make registering the dll a double-click process (for the users).
+- Updated the readme to reflect the change, so that users can register the dll on thier own.
+- Removed "Failed to create Skype instance!" message, apparently?
