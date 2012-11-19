@@ -51,6 +51,9 @@ const string DiceRoller::HELP_MESSAGE =
 "    //10Again:(t/f) : (admin) sets the success counter to add " "\n"
 "                      1 success and roll a d10 for every 10 counted." "\n"
 "                      Default off (f)" "\n"
+"    //remove:(t/f)  : (admin) sets the success counter to remove " "\n"
+"					   1 sucess on rolls of 1. " "\n"
+"					   Default off (f)" "\n"
 "=======End Command Reference========" "\n";
 
 DiceRoller::DiceRoller(string adminName)
@@ -72,6 +75,7 @@ DiceRoller::DiceRoller(string adminName)
 	grThanDiff = true;
 	d10AgainRule = false;
 	d10DoubleRule = false;
+	d1RemoveRule = false;
 	rolledDPerc = false;
 }
 
@@ -153,9 +157,13 @@ void DiceRoller::parseDiceRoll(string command)
 			}
 			else
 			{
-				result.push_back(rollD20());
-				quantity = 1;
-				sides = 20;
+				// the //d-anything
+				if(command.compare(0,5, "diff:")!=0)
+				{
+					result.push_back(rollD20());
+					quantity = 1;
+					sides = 20;
+				}
 			}
 		}
 	}
@@ -195,12 +203,19 @@ void DiceRoller::parseDiceRoll(string command)
 
 string DiceRoller::parseAdmin(string command)
 {
+	//Change the command into lower-case
+	for(int i = 0; command[i] != '\0'; i++){
+		command[i] = tolower(command[i]);
+	}
+
+	//std::cout << command <<", lenght:"<<command.size();
+
 	if( command.length()==4 && command.compare(0,4, "help")==0)
 	{
 		std::cout << HELP_MESSAGE;
 		return HELP_MESSAGE;
 	}
-	if( command.length() == 7 && command.compare(0,4, "Sys:")==0 )
+	if( command.length() >= 7 && (command.compare(0,4, "sys:")==0 || command.compare(0,6, "system:")==0) )
 	{
 		if(command.compare(4,3, "d20")==0)
 		{
@@ -213,24 +228,41 @@ string DiceRoller::parseAdmin(string command)
 			return "SYSTEM: Dice System changed to d10";
 		}
 	}
-	else if( command.length() >= 12 && command.compare(0,11, "Difficulty:")==0 && isdigit(command[11]) )
+	else if(command.length() >= 6 && command.compare(0,5, "diff:")==0 && isdigit(command[5]))
+	{
+		grThanDiff = true;
+		setDifficulty(atoi(command.substr(5).c_str()));
+		return "SYSTEM: Success difficulty set to >= " +  NumberToString(this->d10_Difficulty);
+	}
+	else if( command.length() >= 12 && command.compare(0,11, "difficulty:")==0 && isdigit(command[11]) )
 	{
 		grThanDiff = true;
 		setDifficulty(atoi(command.substr(11).c_str()));
 		return "SYSTEM: Success difficulty set to >= " +  NumberToString(this->d10_Difficulty);
 	}
-	else if( command.length() >= 13 && command.compare(0,12, "-Difficulty:")==0 && isdigit(command[12]) )
+	else if(command.length() >= 7 && command.compare(0,6, "-diff:")==0 && isdigit(command[6]))
+	{
+		grThanDiff = false;
+		setDifficulty( atoi( command.substr(6).c_str() ) );
+		return "SYSTEM: Success difficulty set to <= " + NumberToString(this->d10_Difficulty);
+	}
+	else if( command.length() >= 13 && command.compare(0,12, "-difficulty:")==0 && isdigit(command[12]) )
 	{
 		grThanDiff = false;
 		setDifficulty( atoi( command.substr(12).c_str() ) );
 		return "SYSTEM: Success difficulty set to <= " + NumberToString(this->d10_Difficulty);
 	}
-	else if( command.length() >= 13 && command.compare(0,12, "TDifficulty:")==0 && isdigit(command[12]))
+	else if(command.length() >= 7 && command.compare(0,6, "tdiff:")==0 && isdigit(command[6]))
+	{
+		setTempDifficulty(atoi(command.substr(6).c_str()));
+		return "SYSTEM: Temporary difficulty set to >= " + NumberToString(this->tempDifficulty);
+	}
+	else if( command.length() >= 13 && command.compare(0,12, "tdifficulty:")==0 && isdigit(command[12]))
 	{
 		setTempDifficulty(atoi(command.substr(12).c_str()));
 		return "SYSTEM: Temporary difficulty set to >= " + NumberToString(this->tempDifficulty);
 	}
-	else if( command.length() >= 10 && command.compare(0,9, "10Double:")==0 )
+	else if( command.length() >= 10 && command.compare(0,9, "10double:")==0 )
 	{
 		if(command[9] =='t' || command[9] =='T')
 		{
@@ -243,7 +275,7 @@ string DiceRoller::parseAdmin(string command)
 			return "SYSTEM: d10 Double Rule OFF, 10's count for 1 success";
 		}
 	}
-	else if( command.length() >= 9 &&  command.compare(0,8, "10Again:")==0 )
+	else if( command.length() >= 9 &&  command.compare(0,8, "10again:")==0 )
 	{
 		if(command[8] =='t' || command[8] =='T')
 		{
@@ -256,7 +288,20 @@ string DiceRoller::parseAdmin(string command)
 			return "SYSTEM: d10 Again Rule OFF, 10's count for 1 success";
 		}
 	}
-	else if( command.length() >= 8 && command.compare(0,7, "ReSeed:") == 0 )
+	else if( command.length() >= 8 &&  command.compare(0,7, "remove:")==0 )
+	{
+		if(command[7] =='t' || command[7] =='T')
+		{
+			set1Remove(true);
+			return "SYSTEM: d1 Remove Rule ON, 1's removes one success";
+		}
+		else if ( command[7] == 'f' || command[7] =='F')
+		{
+			set1Remove(false);
+			return "SYSTEM: d1 Remove Rule OFF, 1's dont remove one sucess";
+		}
+	}
+	else if( command.length() >= 8 && command.compare(0,7, "reseed:") == 0 )
 	{
 		if(command[7] =='t' || command[7] =='T')
 		{
@@ -269,7 +314,6 @@ string DiceRoller::parseAdmin(string command)
 			return "SYSTEM: ReSeed by command is OFF. Seeds will be randomly generated.";
 		}
 	}
-
 	return "";
 }
 
@@ -291,6 +335,11 @@ void DiceRoller::setDAnyAllow(bool val)
 void DiceRoller::set10Again(bool val)
 {
 	this->d10AgainRule = val;
+}
+
+void DiceRoller::set1Remove(bool val)
+{
+	this->d1RemoveRule = val;
 }
 
 void DiceRoller::set10Double(bool val)
@@ -391,7 +440,7 @@ string DiceRoller::performRoll(string sender, string command)
 			int successes = sumD10Success();
 			if(d10AgainRule)
 			{
-				returnString += "\nSecond Rolls: ";
+				returnString += "\nRerolls: ";
 				for(int i = 0; i < d10SecondVals.size(); i++)
 				{
 					if(i != 0 && i%10 != 0)
@@ -446,23 +495,47 @@ int DiceRoller::sumD10Success()
 			{
 				successCount++;
 			}
+
+			if(this->d1RemoveRule && rolledVals[i] == 1){
+				successCount--;
+			}
+
 		}
 
 		if(this->d10AgainRule)
 		{
-			this->rollD10(againCount, d10SecondVals);
 
-			for(int i = 0; i < d10SecondVals.size(); i++)
-			{
-				if( (grThanDiff && d10SecondVals[i] >= d10_Difficulty) )
+			//All of the rerolls
+			vector<int> rerolled;
+
+			//Makes sure that we rereoll the rerolls and so on(as long as we get some tens.
+			while(againCount != 0){
+
+				d10SecondVals.clear();
+
+				this->rollD10(againCount, d10SecondVals);//Get next batch of rerolls
+				againCount=0;
+
+				for(int i = 0; i < d10SecondVals.size(); i++)
 				{
-					successCount++;
-				}
-				else if (!grThanDiff && d10SecondVals[i] <= d10_Difficulty)
-				{
-					successCount++;
+					rerolled.push_back(d10SecondVals[i]);
+
+					if( (grThanDiff && d10SecondVals[i] >= d10_Difficulty) )
+					{
+						successCount++;
+					}
+					else if (!grThanDiff && d10SecondVals[i] <= d10_Difficulty)
+					{
+						successCount++;
+					}
+
+					if(d10SecondVals[i] == 10){
+						againCount++;
+					}
 				}
 			}
+			//Reset the vector to all of the rerolls
+			d10SecondVals = rerolled;
 		}
 	}
 

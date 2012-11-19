@@ -71,6 +71,7 @@ class DiceRoller
 		int tempDifficulty;
 		bool grThanDiff;
 		bool d10AgainRule;
+		bool d1RemoveRule;
 		bool d10DoubleRule;
 		bool rolledDPerc;
 
@@ -89,6 +90,7 @@ class DiceRoller
 		void setDifficulty(int val);
 		void setTempDifficulty(int val);
 		void set10Again(bool val);
+		void set1Remove(bool val);
 		void set10Double(bool val);
 		void setCommandSeed(bool val);
 		int sum(int* values);
