@@ -53,12 +53,12 @@ Administrator Commands
 					  this functioality is only included  to add another level of random generation for those that don't trust pseudorandom numbers, 
 					  or for those that feel superstitious that typing //dI-CAN-WIN will give them a better roll.
 					  
-	Difficulty:#, -Difficulty:#, TDifficulty:#, 10Double:(t/f), 10Again:(t/f)
+	Difficulty:#, -Difficulty:#, TDifficulty:#, 10Double:(t/f), 10Again:(t/f), remove:(t/f)
 					  These values are specific to the d10 success counter when using the d10 system option. Typically, d10 systems roll some
 					  number of d10 dice, and all the dice that roll higher (or lower) than a certain threshhold count as a success. The 
 					  Difficulty options allow control over the threshhold value. The 10Double can enable the counter to count a 
 					  10 as two successes. The 10Again rule counts the number of 10 rolls, and rolls one additional d10 for every 10 rolled.
-					  This is not recursive, so the system will only roll an additional d10 for every d10 in the first roll set.
+					  Remove makes it so that rolls of 1 removes one success.
 	
 	//DICE-EXIT		  Closes the DiceRoller
 	//help			  lists available commands.
@@ -112,7 +112,7 @@ Credits
 	Skype Diceroller V2.0 (C++)
 	Original Code Author: Cody Duncan
 	Code Assistance: Mr. Scott Bell , Skype Moderator TheUberOverlord
-	Future Code Authors: 
+	Future Code Authors: LURKEN
 	Icon Artist: Donald Simon, Andrew Sinclair
 	Testers: Roy Lee, Matt M., Chad(wick)
 	Version 1.2, August 8, 2009 (Java)

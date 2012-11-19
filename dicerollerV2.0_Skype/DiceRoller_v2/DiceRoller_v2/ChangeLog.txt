@@ -18,7 +18,7 @@ December 31st, 2011
 - Updated the readme to reflect the change, so that users can register the dll on thier own.
 - Removed "Failed to create Skype instance!" message, apparently?
 
-November 17th, 2012
+November 17th, 2012 by LURKEN
 - Changed it so that the commands are case-insensitive. You can now write //difficulty
 - Added some simpler versions of commands, //diff, //tdiff.
 - Added command //remove:(t/f), that adds the choice that 1's remove one success.
