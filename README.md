@@ -11,5 +11,5 @@ This repository is a clone of the main host at https://sourceforge.net/projects/
 
 ________________________________________________
 As of August 4th, 2012, this project has been downloaded 4,897 times. 
-I hope this tool has helped many of you in your games over skype :). 
+I hope this tool has helped many of you in your games over skype :D. 
 ________________________________________________
