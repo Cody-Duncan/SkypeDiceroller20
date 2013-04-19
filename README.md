@@ -1,3 +1,5 @@
+![My image](/dicerollerV2.0_Skype/D20.png) 
+# DiceRoller V2.0 (for Skype)
 
 The next version of the Dice Roller Extra for Skype. Allows commands detected within a Skype chat 
 to generate random values to represent dice rolls. Currently Windows only.
