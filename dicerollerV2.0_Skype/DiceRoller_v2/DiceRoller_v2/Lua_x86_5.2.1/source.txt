@@ -1,0 +1,9 @@
+Lua Binaries 5.2.1 Release 1 - x86 DLL and Includes
+
+http://luabinaries.sourceforge.net/download.html
+
+download Windows x86 DLL and Includes (MingW 4 Compatible) 
+http://sourceforge.net/projects/luabinaries/files/5.2.1/Windows%20Libraries/Dynamic/lua-5.2.1_Win32_dll11_lib.zip/download
+
+downloaded from mirror at 
+http://www.mirrorservice.org/sites/downloads.sourceforge.net/l/lu/luabinaries/5.2.1/Windows%20Libraries/Dynamic/

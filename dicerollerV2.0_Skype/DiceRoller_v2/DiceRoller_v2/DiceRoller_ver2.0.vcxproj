@@ -56,12 +56,19 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <AdditionalIncludeDirectories>$(ProjectDir)\Lua_x86_5.2.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
+      <AdditionalLibraryDirectories>$(ProjectDir)\Lua_x86_5.2.1\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>lua52.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy /y "$(ProjectDir)Lua_x86_5.2.1\*.dll" "$(OutDir)"
+xcopy /y "$(ProjectDir)*.lua" "$(OutDir)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -84,6 +91,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="DiceRoller.cpp" />
+    <ClCompile Include="LuaScript.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="SkypeThread.cpp" />
     <ClCompile Include="stdafx.cpp">
@@ -93,6 +101,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DiceRoller.h" />
+    <ClInclude Include="LuaScript.h" />
     <ClInclude Include="MersenneTwister.h" />
     <ClInclude Include="SkypeThread.h" />
     <ClInclude Include="stdafx.h" />
