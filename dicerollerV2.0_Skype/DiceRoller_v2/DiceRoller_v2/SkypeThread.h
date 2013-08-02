@@ -36,8 +36,10 @@ class SkypeThread : public IDispEventSimpleImpl<1, SkypeThread, &__uuidof(SKYPE4
 		void Stop();
 
 	private:
-		DiceRoller roll;
+		IDiceRoller* roll;
 		static const string CLOSE_MESSAGE;
 		static const string ABOUT_MESSAGE;
+
+        void earlyDispose();
 
 };

@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "SkypeThread.h"
+#include "DiceRollerLuaScript.h"
 
 const string SkypeThread::CLOSE_MESSAGE = "Thanks for Using DiceRoller v2.0. Shutting Down.";
 const string SkypeThread::ABOUT_MESSAGE = 
@@ -29,6 +30,8 @@ SkypeThread::SkypeThread() : m_bEventsConnected(0)
 			m_bEventsConnected = TRUE;
 	}
 
+    roll = new DiceRollerLuaScript("test.lua");
+
 }
 
 SkypeThread::~SkypeThread()
@@ -38,6 +41,12 @@ SkypeThread::~SkypeThread()
 			m_bEventsConnected = FALSE;
 	}
 	m_spSkype = NULL;
+}
+
+//disposal before destructor call
+void SkypeThread::earlyDispose()
+{
+    delete roll;
 }
  
 ///Fired when an attachment status changes, typically fires when a connection is made.
@@ -94,7 +103,7 @@ void __stdcall SkypeThread::OnMessageStatus (SKYPE4COMLib::IChatMessage* pMessag
 
 	if(Status == SKYPE4COMLib::cmsSent || Status == SKYPE4COMLib::cmsRead )
 	{
-		result = roll.performRoll(sender, command);
+		result = roll->performRoll(sender, command);
 		result += "\n";
 	}
 	if(Status == SKYPE4COMLib::cmsUnknown)
@@ -103,6 +112,7 @@ void __stdcall SkypeThread::OnMessageStatus (SKYPE4COMLib::IChatMessage* pMessag
 		result += "\n";
 	}
 	
+    //if the result is longer than 3 characters, send chat message
 	if(result.length() > 3)
 	{
 		_bstr_t output = result.c_str();
@@ -110,7 +120,7 @@ void __stdcall SkypeThread::OnMessageStatus (SKYPE4COMLib::IChatMessage* pMessag
 		Sleep(100);
 	}
 
-	if(Status == SKYPE4COMLib::cmsSending && roll.isAdmin(sender))
+	if(Status == SKYPE4COMLib::cmsSending && roll->isAdmin(sender))
 	{
 		if(strcmp((char*)pMessage->GetBody(), "//DICE-EXIT")==0)
 		{
@@ -136,7 +146,7 @@ void SkypeThread::ConnectSkype()
 		m_spSkype->Attach(5, VARIANT_TRUE);
 
 		_bstr_t username =  m_spSkype->GetCurrentUserHandle();
-		this->roll.setAdminName((char*)username);
+		this->roll->setAdminName((char*)username);
 
 		MSG msg;
 		while (GetMessage( &msg, NULL, 0, 0 )) 
@@ -144,6 +154,7 @@ void SkypeThread::ConnectSkype()
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
 		}
+        earlyDispose();
 		std::cout << "closing down connection" << std::endl;
 		ExitThread(0);
 

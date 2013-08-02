@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "IDiceRoller.h"
 #include "MersenneTwister.h"
 using namespace std;
 /*
@@ -40,7 +41,7 @@ enum System
 	None, D20, D10
 };
 
-class DiceRoller
+class DiceRoller : public IDiceRoller
 {
 	private:
 		string parseAdmin(string command);
@@ -77,15 +78,17 @@ class DiceRoller
 
 		string adminName;
 
+    
 	public:
 		DiceRoller(string adminName = "");
 		~DiceRoller();
 
+        //helper methods
 		void roll(int quantity, int sides, vector<int>& result);
 		int rollD20();
 		void rollD10(int quantity, vector<int>& result);
 		void rollDPerc(vector<int>& result);
-		void setAdminName(string adminName);
+		
 		void setDAnyAllow(bool val);
 		void setDifficulty(int val);
 		void setTempDifficulty(int val);
@@ -97,8 +100,15 @@ class DiceRoller
 		int sumD10Success();
 		int sumRoll();
 		string parseCommand(string command, bool isAdmin = false);
-		string performRoll(string sender, string command);
-		bool isAdmin(std::string name);
+		
+		
+
+    //IDiceRoller interface methods
+    public:
+        string performRoll(string sender, string command);
+        void setAdminName(string adminName);
+        bool isAdmin(std::string name);
+        void dispose();
 };
 
 

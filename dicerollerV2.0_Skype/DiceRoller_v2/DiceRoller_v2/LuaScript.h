@@ -26,7 +26,7 @@ public:
     
     
 
-private:
+protected:
     lua_State *L;  //global lya state pointer
     FILE* logFile;
     bool isInit;

@@ -91,6 +91,7 @@ xcopy /y "$(ProjectDir)*.lua" "$(OutDir)"</Command>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="DiceRoller.cpp" />
+    <ClCompile Include="DiceRollerLuaScript.cpp" />
     <ClCompile Include="LuaScript.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="SkypeThread.cpp" />
@@ -101,11 +102,16 @@ xcopy /y "$(ProjectDir)*.lua" "$(OutDir)"</Command>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DiceRoller.h" />
+    <ClInclude Include="DiceRollerLuaScript.h" />
+    <ClInclude Include="IDiceRoller.h" />
     <ClInclude Include="LuaScript.h" />
     <ClInclude Include="MersenneTwister.h" />
     <ClInclude Include="SkypeThread.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="test.lua" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
