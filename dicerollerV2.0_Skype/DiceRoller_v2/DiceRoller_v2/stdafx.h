@@ -27,7 +27,7 @@
 #include <atlcom.h>
 
 //import the Skype4COM library, rename a couple of commands
-#import "Skype4COM.dll" rename("CreateEvent","CreatePluginEvent"), rename("SendMessage","SendChatMessage")
+#import "lib\Skype4COM.dll" rename("CreateEvent","CreatePluginEvent"), rename("SendMessage","SendChatMessage")
 
 
 
