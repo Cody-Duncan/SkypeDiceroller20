@@ -1,3 +1,23 @@
+--[[
+--DiceRoller.lua -- Script for Skype DiceRoller V2.0
+--Author:Cody Duncan
+--Note: Somewhat poorly written. I have plans to refactor it now that I have taken compilers. :D
+
+DiceRoller V2.0 expects to call three functions:
+
+string performRoll( string sender, string command) // performs the dice roll, returns a string that prints as a message to skype
+void   setAdminName(string adminName)              // sets the admin's name (when the diceroller starts, sets it to local user)
+bool   isAdmin(string name)                        // checks if the arguement is the admin's name (checked on every command)
+
+The DiceRand library is just a custom library built into DiceRoller V2.0 that gives access to a random number generator
+using the Mersenne Twister Algorithm ( by Makoto Matsumoto, Takuji Nishimura, and Shawn Cokus), 
+this particular edition written by Richard J. Wagner.
+DiceRand functions:
+void seed(int seedNum)  // seeds the random number generator
+int rand()              //generates a random integer (often very large)
+int rand(int limit)    //generates a random positive integer that is less than the limit
+
+--]]
 require("DiceRand");
 
 admin = ""
@@ -180,12 +200,11 @@ function performRoll (sender, command)
 
     --TODO: implement D10 section
 
-    
-
     return returnString;
 end
 
 
-math.randomseed( os.time() ^2 )
-math.randomseed( os.time() ^2/3+2 + math.random()/7)
-print( performRoll("Cody","//10d20+") )
+--testing script using built in random number generator
+--math.randomseed( os.time() ^2 )
+--math.randomseed( os.time() ^2/3+2 + math.random()/7)
+--print( performRoll("Cody","//10d20+") )  
