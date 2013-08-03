@@ -3,38 +3,57 @@
 #include "lua.hpp"
 #include <time.h>
 #include <stdlib.h>
+#include "MersenneTwister.h"
 
-static int average(lua_State *L)
+extern MTRand randGen;
+
+/// <summary>
+/// Seeds the random number generator.
+/// Lua Function -> void seed(int)
+/// </summary>
+/// <param name="L">Required for lua to call.</param>
+/// <
+/// <returns></returns>
+static int seed(lua_State *L)
 {
-	/* get number of arguments */
+    /* get number of arguments */
 	int n = lua_gettop(L);
-	double sum = 0;
+	double seedVal = 0;
 	int i;
 
 	/* loop through each argument */
 	for (i = 1; i <= n; i++)
 	{
 		/* total the arguments */
-		sum += lua_tonumber(L, i);
+		seedVal += lua_tonumber(L, i);
 	}
 
-	/* push the average */
-	lua_pushnumber(L, sum / n);
+    randGen.seed(seedVal);
 
-	/* push the sum */
-	lua_pushnumber(L, sum);
-
-	/* return the number of results */
-	return 2;
+    return 0;
 }
 
+/// <summary>
+/// Returns a random integer
+/// Lua Function -> int rand()
+/// </summary>
+/// <param name="L">Required for lua to call.</param>
+/// <returns></returns>
 static int rand(lua_State *L)
 {
-    srand(clock());
+    int randVal = randGen.randInt();
 
-    int randVal = rand();
+    /* get number of arguments */
+	int n = lua_gettop(L);
 
-	/* push the random number */
+    //if one was given, limit the generator to numbers less than the arguement
+    if(n == 1)
+    {
+        int limit = lua_tonumber(L, 1);
+        randVal = randGen.randInt(limit);
+    }
+
+    /* push the random number */
 	lua_pushnumber(L, randVal);
 
 	/* return the number of results */
@@ -43,7 +62,7 @@ static int rand(lua_State *L)
 
 static const luaL_Reg diceRandLib[] = 
 {
-    {"average", average},
+    {"seed", seed},
     {"rand", rand},
     {NULL, NULL}  /* sentinel */
 };

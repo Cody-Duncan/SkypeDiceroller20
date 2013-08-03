@@ -40,6 +40,8 @@ SkypeThread::SkypeThread() : m_bEventsConnected(0)
     {
         roll = luaDiceRoller;
     }   
+
+    //roll = new DiceRoller();
 }
 
 SkypeThread::~SkypeThread()
@@ -105,45 +107,41 @@ void __stdcall SkypeThread::OnAttachmentStatus(SKYPE4COMLib::TAttachmentStatus S
 //Fired when a message is sent or recieved.
 void __stdcall SkypeThread::OnMessageStatus (SKYPE4COMLib::IChatMessage* pMessage ,SKYPE4COMLib::TChatMessageStatus Status)
 {
-    /*std::cout << "---------OnMessageStatus-begin-------\n"<< std::endl;
-    _tprintf(_T("Message status %d\n"), Status);
-    printf("message sender: %s\n", (char*)pMessage->GetSender()->GetHandle());
-    printf("message: %s",  (char*)pMessage->GetBody());
-    std::cout << "\n---------OnMessageStatus-end-------"<< std::endl;*/
+    std::string sender = (char*)pMessage->GetSender()->GetHandle();  //get sender
+    std::string command = (char*)pMessage->GetBody();                //get the message (which may be a command)
+    std::string result = "";                                         //result to output
 
-    std::string sender = (char*)pMessage->GetSender()->GetHandle();
-    std::string command = (char*)pMessage->GetBody();
-    std::string result = "";
+    //check to ensure this is not exit or about command
+    if( strcmp(command.c_str(), "//DICE-EXIT")  != 0 && 
+        strcmp(command.c_str(), "//DICE-ABOUT") != 0)
+    {
+        //perform a roll on sent and read messages
+        if(Status == SKYPE4COMLib::cmsSent || Status == SKYPE4COMLib::cmsRead )
+        {
+            result = roll->performRoll(sender, command);
+            result += "\n";
+        }
 
-    if(Status == SKYPE4COMLib::cmsSent || Status == SKYPE4COMLib::cmsRead )
-    {
-        result = roll->performRoll(sender, command);
-        result += "\n";
-    }
-    if(Status == SKYPE4COMLib::cmsUnknown)
-    {
-        result = "Unknown status of message. No rolling done.";
-        result += "\n";
+        //if the result is longer than 3 characters, send chat message of result
+        if(result.length() > 3)
+        {
+            _bstr_t output = result.c_str();
+            pMessage->GetChat()->SendChatMessage(output);
+            Sleep(100);
+        }
     }
     
-    //if the result is longer than 3 characters, send chat message
-    if(result.length() > 3)
-    {
-        _bstr_t output = result.c_str();
-        pMessage->GetChat()->SendChatMessage(output);
-        Sleep(100);
-    }
-
+    //deal with "exit" and "about" command
     if(Status == SKYPE4COMLib::cmsSending && roll->isAdmin(sender))
     {
-        if(strcmp((char*)pMessage->GetBody(), "//DICE-EXIT")==0)
+        if(strcmp(command.c_str(), "//DICE-EXIT")==0)
         {
             std::cout << CLOSE_MESSAGE << endl;
             pMessage->GetChat()->SendChatMessage(CLOSE_MESSAGE.c_str());
 
             PostThreadMessage(m_dwThreadId, WM_QUIT, NULL, NULL);			//closes the thread
         }
-        else if(strcmp((char*)pMessage->GetBody(), "//DICE-ABOUT")==0)
+        else if(strcmp(command.c_str(), "//DICE-ABOUT")==0)
         {
             std::cout << ABOUT_MESSAGE << endl;
             pMessage->GetChat()->SendChatMessage(ABOUT_MESSAGE.c_str());
