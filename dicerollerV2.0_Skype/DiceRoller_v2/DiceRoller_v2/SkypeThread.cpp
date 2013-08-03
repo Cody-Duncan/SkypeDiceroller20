@@ -35,7 +35,7 @@ SkypeThread::SkypeThread() : m_bEventsConnected(0)
     luaDiceRoller->loadLua();
     luaDiceRoller->openLibrary("DiceRand", luaopen_DiceRand);
 
-    int err = luaDiceRoller->runScript("test.lua");
+    int err = luaDiceRoller->runScript("DiceRoller.lua");
     if(!err)
     {
         roll = luaDiceRoller;
