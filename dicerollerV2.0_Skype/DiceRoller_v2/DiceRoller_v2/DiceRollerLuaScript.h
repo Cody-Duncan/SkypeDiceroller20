@@ -5,9 +5,7 @@ class DiceRollerLuaScript : public LuaScript, public IDiceRoller
 {
 public:
     DiceRollerLuaScript(void);
-    DiceRollerLuaScript(const char* filename);
     DiceRollerLuaScript(FILE* errorLog);
-    DiceRollerLuaScript(const char* filename, FILE* errorLog);
     ~DiceRollerLuaScript(void);
 
     static const std::string funcName_PerformRoll;

@@ -11,19 +11,10 @@ DiceRollerLuaScript::DiceRollerLuaScript(void)
 {
 }
 
-DiceRollerLuaScript::DiceRollerLuaScript(const char* filename)
-    :LuaScript(filename)
-{
-}
 DiceRollerLuaScript::DiceRollerLuaScript(FILE* errorLog)
     :LuaScript(errorLog)
 {
 }
-DiceRollerLuaScript::DiceRollerLuaScript(const char* filename, FILE* errorLog)
-    :LuaScript(filename, errorLog)
-{
-}
-
 
 DiceRollerLuaScript::~DiceRollerLuaScript(void)
 {

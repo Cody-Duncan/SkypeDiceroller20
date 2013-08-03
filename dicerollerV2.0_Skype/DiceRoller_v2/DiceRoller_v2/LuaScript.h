@@ -7,17 +7,19 @@ class LuaScript
 {
 public:
     LuaScript(void);
-    LuaScript(const char* filename);
     LuaScript(FILE* errorLog);
-    LuaScript(const char* filename, FILE* errorLog);
     ~LuaScript(void);
 
-    int initialize(const char* filename);
-    bool isInitialized();
+    void loadLua();
+    int runScript(const char* filename);
+    bool isScriptRun();
     void close();
 
     void callVoidFunction(const char* name);
     int callVoidFunctionInt(const char* name);
+
+    void registerFunction(const char* name, lua_CFunction f);
+    void openLibrary(const char* libName, lua_CFunction openf);
 
     int getResultInt();
     double getResultDouble();
@@ -29,7 +31,7 @@ public:
 protected:
     lua_State *L;  //global lya state pointer
     FILE* logFile;
-    bool isInit;
+    bool hasScriptBeenRun;
     void defaultValues();
 
     int report (lua_State *L, int status);

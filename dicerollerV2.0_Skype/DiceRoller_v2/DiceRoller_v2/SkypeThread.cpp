@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "SkypeThread.h"
 #include "DiceRollerLuaScript.h"
+#include "DiceRand_Lua.h"
 
 const string SkypeThread::CLOSE_MESSAGE = "Thanks for Using DiceRoller v2.0. Shutting Down.";
 const string SkypeThread::ABOUT_MESSAGE = 
@@ -30,8 +31,15 @@ SkypeThread::SkypeThread() : m_bEventsConnected(0)
             m_bEventsConnected = TRUE;
     }
 
-    roll = new DiceRollerLuaScript("test.lua");
+    DiceRollerLuaScript* luaDiceRoller = new DiceRollerLuaScript();
+    luaDiceRoller->loadLua();
+    luaDiceRoller->openLibrary("DiceRand", luaopen_DiceRand);
 
+    int err = luaDiceRoller->runScript("test.lua");
+    if(!err)
+    {
+        roll = luaDiceRoller;
+    }   
 }
 
 SkypeThread::~SkypeThread()
@@ -46,6 +54,12 @@ SkypeThread::~SkypeThread()
 //disposal before destructor call
 void SkypeThread::earlyDispose()
 {
+    if(typeid(roll) == typeid(DiceRollerLuaScript*))
+    {
+        DiceRollerLuaScript* luaDiceRoller = dynamic_cast<DiceRollerLuaScript*> (roll);
+        luaDiceRoller->dispose();
+    }
+    
     delete roll;
 }
  

@@ -7,25 +7,12 @@
 #include <time.h>
 
 LuaScript::LuaScript(void)
-     : isInit(false), logFile(NULL)
+     : hasScriptBeenRun(false), logFile(NULL)
 {
 }
-
-LuaScript::LuaScript(const char* filename)
-    : isInit(false), logFile(NULL)
-{
-    initialize(filename);
-}
-
 LuaScript::LuaScript(FILE* errorLog)
-     : isInit(false), logFile(errorLog)
+     : hasScriptBeenRun(false), logFile(errorLog)
 {
-}
-
-LuaScript::LuaScript(const char* filename, FILE* errorLog)
-    : isInit(false), logFile(errorLog)
-{
-    initialize(filename);
 }
 
 LuaScript::~LuaScript(void)
@@ -49,16 +36,24 @@ int LuaScript::report (lua_State *L, int status) {
 
 
 /// <summary>
-/// Initializes lua_State object, opens and runs script file.
+/// Initializes lua_State object, loads libraries.
 /// </summary>
 /// <param name="filename">The filename.</param>
 /// <returns>0 if successful, other values for errors</returns>
-int LuaScript::initialize(const char* filename)
+void LuaScript::loadLua()
 {
-    int err = 0;
-
     L = luaL_newstate(); //use this for lua (version > 5.1) to create lua_State object
     luaL_openlibs(L);    //open standard lua libraries
+}
+
+/// <summary>
+/// Runs the specified script
+/// </summary>
+/// <param name="filename">The script's filename</param>
+/// <returns>0 if successful, other if there was error. Output and log file will report errors</returns>
+int LuaScript::runScript(const char* filename)
+{
+    int err = 0;
 
     //load the script file
     std::cerr << "-- Loading file: " << filename << std::endl;
@@ -73,7 +68,7 @@ int LuaScript::initialize(const char* filename)
     }
 
     if(err == 0)
-        isInit = true;
+        hasScriptBeenRun = true;
 
     return err;
 }
@@ -118,6 +113,20 @@ int LuaScript::callVoidFunctionInt(const char* name)
     return getResultInt();
 }
 
+void LuaScript::registerFunction(const char* name, lua_CFunction f)
+{
+    lua_register(L, name, f);
+}
+
+
+/// <summary>
+/// Opens the library.
+/// </summary>
+/// <param name="openf">A lua_CFunction that creates the library function list and calls luaL_newlib to load that list.</param>
+void LuaScript::openLibrary(const char* libName, lua_CFunction openf)
+{
+    luaL_requiref(L, libName, openf, 1);
+}
 
 /// <summary>
 /// Closes the lua script.
@@ -125,17 +134,17 @@ int LuaScript::callVoidFunctionInt(const char* name)
 void LuaScript::close()
 {
     lua_close(L);
-    isInit = false;
+    hasScriptBeenRun = false;
 }
 
 
 /// <summary>
-/// Determines whether the lua script is initialized.
+/// Determines whether the lua script has been run.
 /// </summary>
-/// <returns>true if the script is initialized, false otherwise.</returns>
-bool LuaScript::isInitialized()
+/// <returns>true if the script has been run, false otherwise.</returns>
+bool LuaScript::isScriptRun()
 {
-    return isInit;
+    return hasScriptBeenRun;
 }
 
 /// <summary>
