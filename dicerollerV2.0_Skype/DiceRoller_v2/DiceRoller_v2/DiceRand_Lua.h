@@ -17,16 +17,16 @@ extern MTRand randGen;
 static int seed(lua_State *L)
 {
     /* get number of arguments */
-	int n = lua_gettop(L);
-	double seedVal = 0;
-	int i;
+    int n = lua_gettop(L);
+    double seedVal = 0;
+    int i;
 
-	/* loop through each argument */
-	for (i = 1; i <= n; i++)
-	{
-		/* total the arguments */
-		seedVal += lua_tonumber(L, i);
-	}
+    /* loop through each argument */
+    for (i = 1; i <= n; i++)
+    {
+        /* total the arguments */
+        seedVal += lua_tonumber(L, i);
+    }
 
     randGen.seed(seedVal);
 
@@ -44,7 +44,7 @@ static int rand(lua_State *L)
     int randVal = randGen.randInt();
 
     /* get number of arguments */
-	int n = lua_gettop(L);
+    int n = lua_gettop(L);
 
     //if one was given, limit the generator to numbers less than the arguement
     if(n == 1)
@@ -54,10 +54,10 @@ static int rand(lua_State *L)
     }
 
     /* push the random number */
-	lua_pushnumber(L, randVal);
+    lua_pushnumber(L, randVal);
 
-	/* return the number of results */
-	return 1;
+    /* return the number of results */
+    return 1;
 }
 
 static const luaL_Reg diceRandLib[] = 
