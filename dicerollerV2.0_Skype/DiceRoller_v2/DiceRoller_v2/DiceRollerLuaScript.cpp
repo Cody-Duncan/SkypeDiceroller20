@@ -22,6 +22,7 @@ DiceRollerLuaScript::~DiceRollerLuaScript(void)
 
 void DiceRollerLuaScript::dispose()
 {
+    closeLogFile();
     close();
 }
 

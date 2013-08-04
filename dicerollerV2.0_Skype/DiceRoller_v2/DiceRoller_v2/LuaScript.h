@@ -14,6 +14,7 @@ public:
     int runScript(const char* filename);
     bool isScriptRun();
     void close();
+    void closeLogFile();
 
     void callVoidFunction(const char* name);
     int callVoidFunctionInt(const char* name);

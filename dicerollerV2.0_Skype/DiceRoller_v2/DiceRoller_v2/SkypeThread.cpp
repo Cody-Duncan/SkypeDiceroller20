@@ -2,6 +2,7 @@
 #include "SkypeThread.h"
 #include "DiceRollerLuaScript.h"
 #include "DiceRand_Lua.h"
+#include "ErrorLog.h"
 
 const string SkypeThread::CLOSE_MESSAGE = "Thanks for Using DiceRoller v2.1. Shutting Down.";
 const string SkypeThread::ABOUT_MESSAGE = 
@@ -32,7 +33,9 @@ SkypeThread::SkypeThread() : m_bEventsConnected(0)
             m_bEventsConnected = TRUE;
     }
 
-    DiceRollerLuaScript* luaDiceRoller = new DiceRollerLuaScript();
+    FILE* errorLog = openLogFile("errorLog.txt");
+
+    DiceRollerLuaScript* luaDiceRoller = new DiceRollerLuaScript(errorLog);
     luaDiceRoller->loadLua();
     luaDiceRoller->openLibrary("DiceRand", luaopen_DiceRand);
 

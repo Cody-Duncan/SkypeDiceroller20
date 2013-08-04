@@ -200,7 +200,7 @@ end
 
 function setAdminName(adminID)
     admin = adminID
-    print("set admin name to" .. adminName)
+    print("set admin name to" .. admin)
 end
 
 function isAdmin(personID)

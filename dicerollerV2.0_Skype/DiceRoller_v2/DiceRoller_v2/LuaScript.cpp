@@ -137,6 +137,11 @@ void LuaScript::close()
     hasScriptBeenRun = false;
 }
 
+void LuaScript::closeLogFile()
+{
+    fclose(logFile);
+}
+
 
 /// <summary>
 /// Determines whether the lua script has been run.
