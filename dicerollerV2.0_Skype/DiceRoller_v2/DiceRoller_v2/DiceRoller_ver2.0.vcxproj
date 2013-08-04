@@ -105,6 +105,7 @@ xcopy /y "$(ProjectDir)*.lua" "$(OutDir)"</Command>
   <ItemGroup>
     <ClCompile Include="DiceRoller.cpp" />
     <ClCompile Include="DiceRollerLuaScript.cpp" />
+    <ClCompile Include="ErrorLog.cpp" />
     <ClCompile Include="LuaScript.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="DiceRand_Lua.cpp" />
@@ -117,6 +118,7 @@ xcopy /y "$(ProjectDir)*.lua" "$(OutDir)"</Command>
   <ItemGroup>
     <ClInclude Include="DiceRoller.h" />
     <ClInclude Include="DiceRollerLuaScript.h" />
+    <ClInclude Include="ErrorLog.h" />
     <ClInclude Include="IDiceRoller.h" />
     <ClInclude Include="LuaScript.h" />
     <ClInclude Include="MersenneTwister.h" />
