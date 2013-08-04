@@ -2,7 +2,7 @@
 #include "DiceRollerLuaScript.h"
 
 //names of functions in the lua script that will be called
-const std::string DiceRollerLuaScript::funcName_PerformRoll = "performRoll";
+const std::string DiceRollerLuaScript::funcName_PerformCommand = "performCommand";
 const std::string DiceRollerLuaScript::funcName_SetAdminName = "setAdminName";
 const std::string DiceRollerLuaScript::funcName_IsAdmin = "isAdmin";
 
@@ -25,18 +25,19 @@ void DiceRollerLuaScript::dispose()
     close();
 }
 
-std::string DiceRollerLuaScript::performRoll(std::string sender, std::string command)
+std::string DiceRollerLuaScript::performCommand(std::string senderID, std::string senderDisplayName, std::string command)
 {
     if((int)command.find("//") ==0 && command.length() >= 3)		//starts with //, has more than just //
     {
-        const char* name = funcName_PerformRoll.c_str();
+        const char* name = funcName_PerformCommand.c_str();
 
         if(hasGlobalFunction(name) )
         {
             lua_getglobal(L, name); //put function onto stack
-            lua_pushstring(L, sender.c_str());  //first arg
-            lua_pushstring(L, command.c_str()); //second arg
-            lua_call(L, 2, 1);      //call function, 2 args, 1 return
+            lua_pushstring(L, senderID.c_str());  //first arg,  sender Handle (skype name)
+            lua_pushstring(L, senderDisplayName.c_str());    //second arg  sender Name   (skype fullname/display name)
+            lua_pushstring(L, command.c_str());       //third arg   chat message / command
+            lua_call(L, 3, 1);      //call function, 3 args, 1 return
 
             return getResultString();
         }
@@ -50,14 +51,14 @@ std::string DiceRollerLuaScript::performRoll(std::string sender, std::string com
     return "";
 }
 
-void DiceRollerLuaScript::setAdminName(std::string adminName)
+void DiceRollerLuaScript::setAdminName(std::string adminID)
 {
     const char* name = funcName_SetAdminName.c_str();
 
     if(hasGlobalFunction(name) )
     {
         lua_getglobal(L, name); //put function onto stack
-        lua_pushstring(L, adminName.c_str());
+        lua_pushstring(L, adminID.c_str());
         lua_call(L, 1, 0);      //call function
     }
     else
@@ -67,14 +68,14 @@ void DiceRollerLuaScript::setAdminName(std::string adminName)
     }
 }
 
-bool DiceRollerLuaScript::isAdmin(std::string checkName)
+bool DiceRollerLuaScript::isAdmin(std::string personID)
 {
     const char* name = funcName_IsAdmin.c_str();
 
     if(hasGlobalFunction(name) )
     {
         lua_getglobal(L, name); //put function onto stack
-        lua_pushstring(L, checkName.c_str());
+        lua_pushstring(L, personID.c_str());
         lua_call(L, 1, 1);      //call function
 
         return getResultBool();

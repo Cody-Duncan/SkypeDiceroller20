@@ -5,10 +5,8 @@
 class IDiceRoller
 {
 public:
-    virtual std::string performRoll(std::string sender, std::string command) = 0;
-    virtual bool isAdmin(std::string name) = 0;
-    virtual void setAdminName(std::string adminName) = 0;
-
+    virtual std::string performCommand(std::string senderHandle, std::string senderName, std::string command) = 0;
+    virtual bool isAdmin(std::string personID) = 0;
+    virtual void setAdminName(std::string adminID) = 0;
     virtual void dispose() = 0;
-
 };

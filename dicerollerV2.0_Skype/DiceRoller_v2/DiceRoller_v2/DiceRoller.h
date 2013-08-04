@@ -105,9 +105,9 @@ class DiceRoller : public IDiceRoller
 
     //IDiceRoller interface methods
     public:
-        string performRoll(string sender, string command);
-        void setAdminName(string adminName);
-        bool isAdmin(std::string name);
+        string performCommand(std::string senderID, std::string senderDisplayName, std::string command);
+        void setAdminName(std::string adminID);
+        bool isAdmin(std::string personID);
         void dispose();
 };
 

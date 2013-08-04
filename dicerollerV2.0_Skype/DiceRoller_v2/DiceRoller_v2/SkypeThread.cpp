@@ -107,7 +107,10 @@ void __stdcall SkypeThread::OnAttachmentStatus(SKYPE4COMLib::TAttachmentStatus S
 //Fired when a message is sent or recieved.
 void __stdcall SkypeThread::OnMessageStatus (SKYPE4COMLib::IChatMessage* pMessage ,SKYPE4COMLib::TChatMessageStatus Status)
 {
-    std::string sender = (char*)pMessage->GetSender()->GetHandle();  //get sender
+    SKYPE4COMLib::IUserPtr userPtr = pMessage->GetSender();
+
+    std::string senderDisplayName = (char*)userPtr->GetFullName();              //get sender display name
+    std::string senderID = (char*)userPtr->GetHandle();          //get sender skype name
     std::string command = (char*)pMessage->GetBody();                //get the message (which may be a command)
     std::string result = "";                                         //result to output
 
@@ -118,7 +121,7 @@ void __stdcall SkypeThread::OnMessageStatus (SKYPE4COMLib::IChatMessage* pMessag
         //perform a roll on sent and read messages
         if(Status == SKYPE4COMLib::cmsSent || Status == SKYPE4COMLib::cmsRead )
         {
-            result = roll->performRoll(sender, command);
+            result = roll->performCommand(senderID, senderDisplayName, command);
             result += "\n";
         }
 
@@ -132,7 +135,7 @@ void __stdcall SkypeThread::OnMessageStatus (SKYPE4COMLib::IChatMessage* pMessag
     }
     
     //deal with "exit" and "about" command
-    if(Status == SKYPE4COMLib::cmsSending && roll->isAdmin(sender))
+    if(Status == SKYPE4COMLib::cmsSending && roll->isAdmin(senderID))
     {
         if(strcmp(command.c_str(), "//DICE-EXIT")==0)
         {

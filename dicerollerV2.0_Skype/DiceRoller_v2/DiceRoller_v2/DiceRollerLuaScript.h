@@ -8,15 +8,15 @@ public:
     DiceRollerLuaScript(FILE* errorLog);
     ~DiceRollerLuaScript(void);
 
-    static const std::string funcName_PerformRoll;
+    static const std::string funcName_PerformCommand;
     static const std::string funcName_SetAdminName;
     static const std::string funcName_IsAdmin;
 
     //IDiceRoller interface methods
     public:
-        std::string performRoll(std::string sender, std::string command);
-        void setAdminName(std::string adminName);
-        bool isAdmin(std::string checkName);
+        std::string performCommand(std::string senderID, std::string senderDisplayName, std::string command);
+        bool isAdmin(std::string personID);
+        void setAdminName(std::string adminID);
         void dispose();
 
 };

@@ -5,9 +5,9 @@
 
 DiceRoller V2.0 expects to call three functions:
 
-string performRoll( string sender, string command) // performs the dice roll, returns a string that prints as a message to skype
-void   setAdminName(string adminName)              // sets the admin's name (when the diceroller starts, sets it to local user)
-bool   isAdmin(string name)                        // checks if the arguement is the admin's name (checked on every command)
+string performRoll(string senderID, string displayName, string command) // performs the dice roll, returns a string that prints as a message to skype
+void   setAdminName(string adminName)                                  // sets the admin's name (when the diceroller starts, sets it to local user)
+bool   isAdmin(string name)                                            // checks if the arguement is the admin's name (checked on every command)
 
 The DiceRand library is just a custom library built into DiceRoller V2.0 that gives access to a random number generator
 using the Mersenne Twister Algorithm ( by Makoto Matsumoto, Takuji Nishimura, and Shawn Cokus), 
@@ -41,10 +41,7 @@ function string.compare(str,start,length,otherString)
 end
 
 
-function setAdminName(adminName)
-    admin = adminName
-    print("set admin name to" .. adminName)
-end
+
 
 function isNumber(val)
     return tonumber(val) ~= nil 
@@ -58,9 +55,7 @@ function BuildArray(...)
   return arr
 end
 
-function isAdmin(name)
-    return (admin == name)
-end
+
 
 function parseCommand(command, isAdmin)
     if (string.starts(command, "//") and string.len(command) >= 3) then
@@ -157,7 +152,7 @@ end
 
 
 
-function performRoll (sender, command)
+function performCommand (senderID, displayName, command)
     plusVal = 0
     quantity = 0
     sides = 0
@@ -168,11 +163,11 @@ function performRoll (sender, command)
         -- seed random number generator
     end
     
-    returnString = parseCommand(command, isAdmin(sender))
+    returnString = parseCommand(command, isAdmin(senderID))
 
     if (#rolledVals > 0 and quantity > 0 and sides > 0) then
        --output roller with number of dice and sides on dice rolled
-        returnString = returnString .. string.format("%s rolled %2dd%2d; result:", sender, quantity, sides)
+        returnString = returnString .. string.format("%s rolled %2dd%2d; result:", displayName, quantity, sides)
     end
 
     for i,v in pairs(rolledVals) do
@@ -201,6 +196,15 @@ function performRoll (sender, command)
     --TODO: implement D10 section
 
     return returnString;
+end
+
+function setAdminName(adminID)
+    admin = adminID
+    print("set admin name to" .. adminName)
+end
+
+function isAdmin(personID)
+    return (admin == personID)
 end
 
 

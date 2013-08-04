@@ -321,14 +321,7 @@ string DiceRoller::parseAdmin(string command)
     return "";
 }
 
-void DiceRoller::setAdminName(string adminName)
-{
-    if(this->adminNameIsSet == false)
-    {
-        this->adminName = adminName;
-        this->adminNameIsSet == true;
-    }
-}
+
 
 
 void DiceRoller::setDAnyAllow(bool val)
@@ -391,81 +384,6 @@ void DiceRoller::rollDPerc(vector<int>& result)
     result.push_back(randGen.randInt(10)+1);
     result.push_back(randGen.randInt(10)+1);
     rolledDPerc = true;
-}
-
-string DiceRoller::performRoll(string sender, string command)
-{
-    plusVal = 0;
-    quantity = 0;
-    sides = 0;
-    this->rolledVals.clear();
-    string returnString = "";
-
-    if(commandSeed)
-    {
-        randGen.seed( (MTRand::uint32)command.c_str() + randGen.randInt() );
-    }
-    
-    //parse the command string, and performs the roll or admin command.
-    returnString = parseCommand(command, isAdmin(sender));
-
-    //creat the output values
-    if(rolledVals.size() > 0 && quantity > 0 && sides > 0)
-    {
-        char dest[128];
-        sprintf(dest, "%s rolled %2dd%2d; result:", sender.c_str(), quantity, sides);
-        returnString += dest;
-
-        for(int i = 0; i < rolledVals.size(); i++)
-        {
-            if(i != 0 && i%10 != 0)
-            {
-                returnString += ", ";
-            }
-            else if(i % 10 == 0)
-            {
-                returnString += "\n";
-            }
-            sprintf(dest, "%2d", (int)rolledVals[i]);
-            returnString += dest;
-            
-        }
-
-        if(plusUsed)
-        {
-            returnString += "   +";
-            returnString += NumberToString(plusVal);
-            returnString += "\nSum: ";
-            returnString += NumberToString(sumRoll());
-        }
-
-        if(currentSystem == D10)
-        {
-            int successes = sumD10Success();
-            if(d10AgainRule)
-            {
-                returnString += "\nRerolls: ";
-                for(int i = 0; i < d10SecondVals.size(); i++)
-                {
-                    if(i != 0 && i%10 != 0)
-                    {
-                        returnString += ", ";
-                    }
-                    else if(i % 10 == 0)
-                    {
-                        returnString += "\n";
-                    }
-                    sprintf(dest, "%2d", (int)d10SecondVals[i]);
-                    returnString += dest;
-                }
-            }
-            returnString += "\nNumber of Successes: ";
-            returnString +=	NumberToString(successes);
-        }
-    }
-    
-    std::cout << returnString << std::endl;
-    return returnString;
 }
 
 string DiceRoller::NumberToString ( int Number )
@@ -557,15 +475,6 @@ int DiceRoller::sumRoll()
     return sum;
 }
 
-bool DiceRoller::isAdmin(std::string name)
-{
-    if(name.compare(adminName) == 0)
-    {
-        return true;
-    }
-    return false;
-}
-
 int numDigits(int n)
 {
     int count = 1;
@@ -575,4 +484,114 @@ int numDigits(int n)
         count++;
     }
     return count;
+}
+
+///////////////// IDiceRoller Interface //////////////////////////
+
+
+/// <summary>
+/// Performs a diceroll specified by the command.
+/// Entry point.
+/// </summary>
+/// <param name="senderID">The sender ID.</param>
+/// <param name="senderDisplayName">Display name of the sender.</param>
+/// <param name="command">The command.</param>
+/// <returns></returns>
+string DiceRoller::performCommand(std::string senderID, std::string senderDisplayName, std::string command)
+{
+    plusVal = 0;
+    quantity = 0;
+    sides = 0;
+    this->rolledVals.clear();
+    string returnString = "";
+
+    if(commandSeed)
+    {
+        randGen.seed( (MTRand::uint32)command.c_str() + randGen.randInt() );
+    }
+    
+    //parse the command string, and performs the roll or admin command.
+    returnString = parseCommand(command, isAdmin(senderID));
+
+    //creat the output values
+    if(rolledVals.size() > 0 && quantity > 0 && sides > 0)
+    {
+        char dest[128];
+        sprintf(dest, "%s rolled %2dd%2d; result:", senderDisplayName.c_str(), quantity, sides);
+        returnString += dest;
+
+        for(int i = 0; i < rolledVals.size(); i++)
+        {
+            if(i != 0 && i%10 != 0)
+            {
+                returnString += ", ";
+            }
+            else if(i % 10 == 0)
+            {
+                returnString += "\n";
+            }
+            sprintf(dest, "%2d", (int)rolledVals[i]);
+            returnString += dest;
+            
+        }
+
+        if(plusUsed)
+        {
+            returnString += "   +";
+            returnString += NumberToString(plusVal);
+            returnString += "\nSum: ";
+            returnString += NumberToString(sumRoll());
+        }
+
+        if(currentSystem == D10)
+        {
+            int successes = sumD10Success();
+            if(d10AgainRule)
+            {
+                returnString += "\nRerolls: ";
+                for(int i = 0; i < d10SecondVals.size(); i++)
+                {
+                    if(i != 0 && i%10 != 0)
+                    {
+                        returnString += ", ";
+                    }
+                    else if(i % 10 == 0)
+                    {
+                        returnString += "\n";
+                    }
+                    sprintf(dest, "%2d", (int)d10SecondVals[i]);
+                    returnString += dest;
+                }
+            }
+            returnString += "\nNumber of Successes: ";
+            returnString +=	NumberToString(successes);
+        }
+    }
+    
+    std::cout << returnString << std::endl;
+    return returnString;
+}
+
+
+/// <summary>
+/// Sets the name of the admin. Set the name as the sender Handle (ID), not display name.
+/// </summary>
+/// <param name="adminName">New name of the admin.</param>
+void DiceRoller::setAdminName(string adminID)
+{
+    if(this->adminNameIsSet == false)
+    {
+        this->adminName = adminID;
+        this->adminNameIsSet == true;
+    }
+}
+
+
+bool DiceRoller::isAdmin(std::string personID)
+{
+    if(personID.compare(adminName) == 0)
+    {
+        return true;
+    }
+    return false;
 }
