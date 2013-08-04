@@ -3,10 +3,10 @@
 #include "DiceRollerLuaScript.h"
 #include "DiceRand_Lua.h"
 
-const string SkypeThread::CLOSE_MESSAGE = "Thanks for Using DiceRoller v2.0. Shutting Down.";
+const string SkypeThread::CLOSE_MESSAGE = "Thanks for Using DiceRoller v2.1. Shutting Down.";
 const string SkypeThread::ABOUT_MESSAGE = 
 "---------------------Credits--------------------" "\n"
-"	Skype Diceroller V2.0 (C++)" "\n"
+"	Skype Diceroller V2.1 (C++ / Lua)" "\n"
 "	Original Code Author: Cody Duncan" "\n"
 "	Code Assistance: Mr. Scott Bell , Skype Moderator TheUberOverlord" "\n"
 "	Future Code Authors: " "\n"
@@ -14,8 +14,9 @@ const string SkypeThread::ABOUT_MESSAGE =
 "	Testers: Roy Lee, Matt M., Chad(wick)" "\n"
 "	Version 1.2, August 8, 2009 (Java)" "\n"
 "	Version 2.0, June 1, 2011 (C++)" "\n"
+"   Version 2.1, August 3, 2013 (C++ and Lua)" "\n"
 "	This project was created independently by Cody Duncan, a Computer Science student at Northwest Missouri State University," "\n"
-"	with moral support and concept help from The Fellowship of the Tower Gaming Society (an extremely enjoyable NWMSU campus organization)." "\n"
+"	with moral support and concept help from The Fellowship of the Tower Gaming Society (an extremely enjoyable NWMSU campus organization dedicated to table top gaming)." "\n"
 "	Links: Northwest Missouri State University:  http://www.nwmissouri.edu" "\n"
 "	The Fellowship of the Tower Gaming Society:   http://catpages.nwmissouri.edu/m/FOT/" "\n"
 "	You can contact the Fellowship of the Tower by emailing: fot@nwmissouri.edu" "\n"
