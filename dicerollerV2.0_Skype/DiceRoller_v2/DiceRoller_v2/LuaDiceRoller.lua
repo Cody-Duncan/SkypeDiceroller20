@@ -18,35 +18,42 @@ int rand()              //generates a random integer (often very large)
 int rand(int limit)    //generates a random positive integer that is less than the limit
 
 --]]
+
+
 require("DiceRand");
 
-admin = ""
-rolledVals = {}
-commandSeed = false
-plusUsed = false
-plusVal = 0
-quantity = 0
-sides = 0
+admin = ""             --string - name of admin
+rolledVals = {}        --array of numbers generated
+commandSeed = false    --bool - whether to reseed the diceroller using the current command as part of the seed
+plusUsed = false       --bool - whether the command contained + ( such as //d20+ )
+plusVal = 0            --int  - value after the + symbol in the command( such as //d20+2 )
+quantity = 0           --int  - number of dice to roll. //2d10 -> quantity == 2
+sides = 0              --int  - number of sides on dice to roll. //2d10 -> sides == 10
 
+-- bool - returns whether String starts with Start
 function string.starts(String,Start)
    return string.sub(String,1,string.len(Start))==Start
 end
 
+-- string - returns character at index i in String
 function string.at(String, i)
     return string.sub(String, i, i)
 end
 
+-- bool - Compares the value of str (or a substring) to otherString.
+-- returns true if the specified substring of str is the same as otherString in content.
 function string.compare(str,start,length,otherString)
     return string.sub(str,start,start+length-1) == otherString
 end
 
 
 
-
+-- bool - determines whether the given string is a numerical value
 function isNumber(val)
     return tonumber(val) ~= nil 
 end
 
+-- array - turns an iterator into an array
 function BuildArray(...)
   local arr = {}
   for v in ... do
@@ -150,8 +157,9 @@ function roll(quantity, sides, result)
     end
 end
 
-
-
+------------------------------
+-- DICEROLLER API FUNCTIONS --
+------------------------------
 function performCommand (senderID, displayName, command)
     plusVal = 0
     quantity = 0
