@@ -63,7 +63,8 @@ function BuildArray(...)
 end
 
 
-
+-- Parses a command, an determines whether to evaluate it as an administrator command
+--  or a dice roll.
 function parseCommand(command, isAdmin)
     if (string.starts(command, "//") and string.len(command) >= 3) then
         command = string.sub(command,3)
@@ -84,10 +85,13 @@ function parseCommand(command, isAdmin)
     return ""
 end
 
+--parses and performs an administrator command TODO
 function parseAdmin(command)
     return ""
 end
 
+--parses and returns the result of a dice roll
+--note: this parses just the command string, without the // at the start
 function parseDiceRoll(command)
     local result = {}
     letterDPos = -1
@@ -131,7 +135,6 @@ function parseDiceRoll(command)
     end
 
     --check for plus symbol usage
-
     if( string.find(command,"+") ~= nil) then
         plusUsed = true;
         while( true ) do
@@ -150,6 +153,7 @@ function parseDiceRoll(command)
     rolledVals = result
 end
 
+-- performs a single dice roll, adds the result to the parameter result array 
 function roll(quantity, sides, result)
     for i=1,quantity do
         table.insert(result, DiceRand.rand(sides-1)+1)
@@ -171,13 +175,17 @@ function performCommand (senderID, displayName, command)
         -- seed random number generator
     end
     
+    --parse the message, perform any parsed commands (like a diceroll)
+    --returns a blank string if a dice roll was performed.
+    --quantity, sides, rolledVals will have a value if a dice roll was performed
     returnString = parseCommand(command, isAdmin(senderID))
 
     if (#rolledVals > 0 and quantity > 0 and sides > 0) then
-       --output roller with number of dice and sides on dice rolled
+       --output who rolled with number of dice and sides on dice rolled
         returnString = returnString .. string.format("%s rolled %2dd%2d; result:", displayName, quantity, sides)
     end
 
+    --output the resulting dice roll values
     for i,v in pairs(rolledVals) do
         if (i%10 ~= 0 and i ~= 1) then
             returnString = returnString .. ", ";
@@ -188,6 +196,7 @@ function performCommand (senderID, displayName, command)
         returnString = returnString .. string.format("%2d", rolledVals[i]);
     end
 
+    --output the sum of the results and the plusVal (if + was used)
     if(plusUsed) then
         returnString = returnString .. "   +";
         returnString = returnString .. plusVal;
