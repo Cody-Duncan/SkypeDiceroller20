@@ -68,7 +68,10 @@ int LuaScript::runScript(const char* filename)
     }
 
     if(err == 0)
+    {
         hasScriptBeenRun = true;
+        std::cerr << "-- Successfully loaded: " << filename << std::endl;
+    }
 
     return err;
 }

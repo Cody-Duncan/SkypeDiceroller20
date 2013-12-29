@@ -11,6 +11,7 @@ public:
     static const std::string funcName_PerformCommand;
     static const std::string funcName_SetAdminName;
     static const std::string funcName_IsAdmin;
+    static const std::string commandName_load;
 
     //IDiceRoller interface methods
     public:
