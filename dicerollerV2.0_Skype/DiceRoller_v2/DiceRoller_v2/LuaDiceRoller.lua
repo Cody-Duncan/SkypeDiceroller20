@@ -138,14 +138,29 @@ function parseDiceRoll(command)
     if( string.find(command,"+") ~= nil) then
         plusUsed = true;
         while( true ) do
-            --TODO: fix this loop so it can sum more than one number, right now it would break because tonumber would try to parse extra + symbols
+        
             plusPos = string.find(command, "+", plusPos+1)
+            
             if(plusPos == nil) then
                 break;
             elseif( string.len(command) >= plusPos+1 and isNumber(string.at(command,plusPos+1)) ) then
-                plusVal = plusVal + tonumber(string.sub(command,plusPos+1));
+                -- check for another +
+                nextPos = string.find(command, "+", plusPos+1);
+                parseString = "";
+                
+                --substring just this number
+                if(nextPos ~= nil) then
+                    parseString = string.sub(command,plusPos+1, nextPos-1)
+                else
+                    parseString = string.sub(command,plusPos+1)
+                end
+                
+                --sum onto plusVal
+                if(isNumber(parseString)) then
+                    plusVal = plusVal + tonumber(parseString);
+                end
             end
-        end
+        end -- end while
     else
         plusUsed = false;
     end
