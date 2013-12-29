@@ -195,9 +195,16 @@ function performCommand (senderID, displayName, command)
     --quantity, sides, rolledVals will have a value if a dice roll was performed
     returnString = parseCommand(command, isAdmin(senderID))
 
+        
+    --if the rolledVals, quantity, and sides have a value, a roll command was parsed.
     if (#rolledVals > 0 and quantity > 0 and sides > 0) then
        --output who rolled with number of dice and sides on dice rolled
         returnString = returnString .. string.format("%s rolled %2dd%2d; result:", displayName, quantity, sides)
+    end
+    
+    --if the return string is empty by this point, it processed nothing.
+    if(string.len(returnString) == 0) then
+      return returnString;
     end
 
     --output the resulting dice roll values
