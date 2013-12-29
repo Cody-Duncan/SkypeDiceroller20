@@ -142,7 +142,7 @@ function parseDiceRoll(command)
             plusPos = string.find(command, "+", plusPos+1)
             if(plusPos == nil) then
                 break;
-            elseif( string.len(command) > plusPos+1 and isNumber(string.at(command,plusPos+1)) ) then
+            elseif( string.len(command) >= plusPos+1 and isNumber(string.at(command,plusPos+1)) ) then
                 plusVal = plusVal + tonumber(string.sub(command,plusPos+1));
             end
         end
@@ -211,7 +211,7 @@ function performCommand (senderID, displayName, command)
     end
 
     --TODO: implement D10 section
-
+    print(returnString);
     return returnString;
 end
 
